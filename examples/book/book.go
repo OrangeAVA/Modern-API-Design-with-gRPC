@@ -32,3 +32,16 @@ func SeriallizeBookInfoInHexaDecimal(isbn, publisher string) (string, error) {
 
 	return hexString, nil
 }
+
+func SeriallizeBookRequestInHexaDecimal(id int) (string, error) {
+	b := NewBookRequest(id)
+
+	serializedBookReq, err := proto.Marshal(b)
+	if err != nil {
+		return "", err
+	}
+
+	hexString := hex.EncodeToString(serializedBookReq)
+
+	return hexString, nil
+}

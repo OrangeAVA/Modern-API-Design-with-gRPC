@@ -27,3 +27,10 @@ func Test_NewBookRequest(t *testing.T) {
 
 	assert.Equal(t, int32(5), b.GetId())
 }
+
+func Test_SeriallizeBookRequestInHexaDecimal(t *testing.T) {
+	hex, err := book.SeriallizeBookRequestInHexaDecimal(5)
+
+	require.NoError(t, err)
+	assert.Equal(t, "0805", hex)
+}
