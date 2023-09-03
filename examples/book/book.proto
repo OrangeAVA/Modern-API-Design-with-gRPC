@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package book;
+
+message BookInfo {
+  string isbn = 1;
+  string publisher = 2;
+}
