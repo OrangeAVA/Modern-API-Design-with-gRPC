@@ -13,6 +13,13 @@ func NewBook(isbn, publisher string) *BookInfo {
 	}
 }
 
+func NewBookRequest(id int) *BookRequest {
+
+	return &BookRequest{
+		Id: int32(id),
+	}
+}
+
 func SeriallizeBookInfoInHexaDecimal(isbn, publisher string) (string, error) {
 	b := NewBook(isbn, publisher)
 

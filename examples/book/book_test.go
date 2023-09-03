@@ -21,3 +21,9 @@ func Test_SeriallizeBookInfoInHexaDecimal(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "0a0431323334120a417661204f72616e6765", hex)
 }
+
+func Test_NewBookRequest(t *testing.T) {
+	b := book.NewBookRequest(5)
+
+	assert.Equal(t, int32(5), b.GetId())
+}

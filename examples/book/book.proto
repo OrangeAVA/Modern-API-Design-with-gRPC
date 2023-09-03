@@ -6,3 +6,8 @@ message BookInfo {
   string isbn = 1;
   string publisher = 2;
 }
+
+
+message BookRequest {
+  int32 id = 1;
+}
