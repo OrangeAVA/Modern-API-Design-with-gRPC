@@ -20,6 +20,14 @@ func NewBookRequest(id int) *BookRequest {
 	}
 }
 
+func NewBookWithTitleAndAvailability(id int, title string, availability bool) *Book {
+	return &Book{
+		Id:        int32(id),
+		Title:     title,
+		Available: availability,
+	}
+}
+
 func SeriallizeBookInfoInHexaDecimal(isbn, publisher string) (string, error) {
 	b := NewBook(isbn, publisher)
 

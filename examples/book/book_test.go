@@ -34,3 +34,11 @@ func Test_SeriallizeBookRequestInHexaDecimal(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "0805", hex)
 }
+
+func Test_NewBookWithTitleAndAvailability(t *testing.T) {
+	b := book.NewBookWithTitleAndAvailability(123, "The Great Gatsby", true)
+
+	assert.Equal(t, int32(123), b.GetId())
+	assert.Equal(t, "The Great Gatsby", b.GetTitle())
+	assert.True(t, b.GetAvailable())
+}
