@@ -3,7 +3,7 @@ package book_test
 import (
 	"testing"
 
-	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/examples/book"
+	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-2/book"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
