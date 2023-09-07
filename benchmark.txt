@@ -1,0 +1,28 @@
+PASS
+ok  	github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-2/book	0.009s
+PASS
+ok  	github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-2/person	0.008s
+?   	github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-2/serialization	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-2/serialization/benchmark
+cpu: AMD Ryzen 5 4600U with Radeon Graphics         
+BenchmarkJSONMarshal/SmallData-12         	 2384252	       498.7 ns/op	      64 B/op	       1 allocs/op
+BenchmarkJSONMarshal/MediumData-12        	  945313	      1281 ns/op	     288 B/op	       1 allocs/op
+BenchmarkJSONMarshal/LargeData-12         	  425020	      3012 ns/op	     896 B/op	       1 allocs/op
+
+BenchmarkJSONUnmarshal/SmallData-12       	  998362	      1127 ns/op	     272 B/op	       3 allocs/op
+BenchmarkJSONUnmarshal/MediumData-12      	  333024	      3336 ns/op	     672 B/op	       3 allocs/op
+BenchmarkJSONUnmarshal/LargeData-12       	  119995	      9191 ns/op	    1680 B/op	       3 allocs/op
+
+BenchmarkProtocMarshal/SmallData-12       	 4277210	       245.8 ns/op	      32 B/op	       1 allocs/op
+BenchmarkProtocMarshal/MediumData-12      	 2819110	       425.6 ns/op	     176 B/op	       1 allocs/op
+BenchmarkProtocMarshal/LargeData-12       	 1339984	       900.7 ns/op	     640 B/op	       1 allocs/op
+
+BenchmarkProtocUnMarshal/SmallData-12     	 5212929	       225.3 ns/op	      32 B/op	       2 allocs/op
+BenchmarkProtocUnMarshal/MediumData-12    	 2532816	       474.2 ns/op	     152 B/op	       2 allocs/op
+BenchmarkProtocUnMarshal/LargeData-12     	 1241935	       973.5 ns/op	     584 B/op	       4 allocs/op
+
+PASS
+ok  	github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-2/serialization/benchmark	18.053s
+?   	github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-2/size	[no test files]
