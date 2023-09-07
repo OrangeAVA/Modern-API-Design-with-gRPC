@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package book;
+
+message BookInfo {
+  string isbn = 1;
+  string publisher = 2;
+}
+
+
+message BookRequest {
+  int32 id = 1;
+}
+
+message Book {
+  int32 id = 1;
+  string title = 2;
+  bool available = 3;
+}
