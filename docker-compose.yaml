@@ -10,6 +10,15 @@ services:
     links:
       - db
 
+  grpc-book-server:
+    build:
+      context: .
+      dockerfile: books-app/deploy/dockerfiles/grpc-books-server/Dockerfile
+    ports:
+      - "50051:50051"
+    links:
+      - db
+
   db:
     image: postgres:14.1-alpine
     restart: always
