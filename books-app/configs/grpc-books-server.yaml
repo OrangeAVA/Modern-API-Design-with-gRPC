@@ -1,0 +1,20 @@
+app:
+  serviceName: "grpc-books-server"
+  host: "127.0.0.1"
+  port: 50051
+db:
+  name: books_db
+  schema: "public"
+  user: postgres
+  host: "localhost"
+  password: "mysecretpassword"
+  port: 5432
+  logMode: true
+  sslMode: "disable"
+  migrationPath: "./books-app/scripts"
+  connectionPool:
+    maxOpenConnections: 30
+    maxIdleConnections: 10
+    maxIdleTime: 30
+    maxLifeTime: 3600
+    timeout: 30

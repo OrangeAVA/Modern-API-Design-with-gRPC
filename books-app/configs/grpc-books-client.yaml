@@ -1,0 +1,3 @@
+client:
+  clientName: "grpc-books-client"
+  serverAddress: "localhost:50051"
