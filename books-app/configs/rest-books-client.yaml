@@ -1,0 +1,3 @@
+client:
+  clientName: "rest-books-client"
+  serverAddress: "http://localhost:8090"

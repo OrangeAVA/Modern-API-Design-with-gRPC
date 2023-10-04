@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  rest-book-server:
+    build:
+      context: .
+      dockerfile: books-app/deploy/dockerfiles/rest-books-server/Dockerfile
+    ports:
+      - "8090:8090"
+    links:
+      - db
+
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=books_db
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
