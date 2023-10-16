@@ -18,7 +18,6 @@ services:
       - "50051:50051"
     links:
       - db
-
   db:
     image: postgres:14.1-alpine
     restart: always
