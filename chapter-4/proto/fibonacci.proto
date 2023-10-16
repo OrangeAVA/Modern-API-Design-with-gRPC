@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package proto;
+option go_package="./proto";
+
+message FibonacciRequest{
+    int32 number = 1;
+}
+
+message SyncFibonacciResponse{
+    string timeTaken = 1;
+    repeated int32 fibonacciNumbers = 2;
+}
+
+message AsyncFibonacciResponse{
+    int32 sequence = 1;
+    int32 fibonacciNumber = 2;
+}
+
+
+service FibonacciService{
+  // Unary
+  rpc SyncFibonacci(FibonacciRequest) returns (SyncFibonacciResponse) {};
+
+  // Server Streaming
+  rpc AsyncFibonacci(FibonacciRequest) returns (stream AsyncFibonacciResponse) {};
+}

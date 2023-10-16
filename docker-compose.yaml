@@ -9,6 +9,7 @@ services:
       - "8090:8090"
     links:
       - db
+
   grpc-book-server:
     build:
       context: .
