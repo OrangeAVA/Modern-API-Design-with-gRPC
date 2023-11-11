@@ -8,6 +8,7 @@ import (
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/configs"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/db"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/db/migrations"
+	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/middleware"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/repo"
 	"google.golang.org/grpc"
@@ -58,6 +59,8 @@ func (a *App) Start() {
 	}
 
 	opts := []grpc.ServerOption{}
+	middlewareOpts := middleware.ProvideGrpcMiddlewareServerOpts()
+	opts = append(opts, middlewareOpts...)
 	s := grpc.NewServer(opts...)
 	proto.RegisterBookServiceServer(s, a)
 
