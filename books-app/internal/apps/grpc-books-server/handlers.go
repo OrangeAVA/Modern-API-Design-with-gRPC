@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/model"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
@@ -60,16 +61,24 @@ func (a *App) ListBooks(ctx context.Context, _ *proto.Empty) (*proto.ListBooksRe
 	return &proto.ListBooksRespose{Books: pbBooks}, nil
 }
 
-func (a *App) GetBook(_ context.Context, req *proto.GetBookRequest) (*proto.Book, error) {
+func (a *App) GetBook(ctx context.Context, req *proto.GetBookRequest) (*proto.Book, error) {
 	log.Println("fetching book")
 
-	book := a.bookRepo.GetBook(int(req.Isbn))
+	// Simulating a potentially long-running operation.
+	select {
+	case <-time.After(3 * time.Second): // Simulating a delay
+		book := a.bookRepo.GetBook(int(req.Isbn))
 
-	return &proto.Book{
-		Isbn:      int32(book.Isbn),
-		Name:      book.Name,
-		Publisher: book.Publisher,
-	}, nil
+		return &proto.Book{
+			Isbn:      int32(book.Isbn),
+			Name:      book.Name,
+			Publisher: book.Publisher,
+		}, nil
+	case <-ctx.Done():
+		// Operation was canceled or timed out.
+		return nil, ctx.Err()
+	}
+
 }
 
 func (a *App) RemoveBook(_ context.Context, req *proto.RemoveBookRequest) (*proto.RemoveBookResponse, error) {
