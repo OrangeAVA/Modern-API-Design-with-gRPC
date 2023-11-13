@@ -18,6 +18,8 @@ import (
 
 type App struct {
 	proto.UnimplementedBookServiceServer
+	proto.UnimplementedBookInfoServiceServer
+	proto.UnimplementedReviewServiceServer
 
 	dbConn   *gorm.DB
 	bookRepo *repo.BookRepository
@@ -61,8 +63,12 @@ func (a *App) Start() {
 	opts := []grpc.ServerOption{}
 	middlewareOpts := middleware.ProvideGrpcMiddlewareServerOpts()
 	opts = append(opts, middlewareOpts...)
+
 	s := grpc.NewServer(opts...)
+
 	proto.RegisterBookServiceServer(s, a)
+	proto.RegisterBookInfoServiceServer(s, a)
+	proto.RegisterReviewServiceServer(s, a)
 
 	reflection.Register(s)
 

@@ -23,3 +23,10 @@ grpcurl -plaintext -d '{"isbn": "12348", "name": "test name", "publisher": "new 
 
 # [gRPC] remove a book
 grpcurl -plaintext -d '{"isbn": "12348"}' 0.0.0.0:50051  prot.BookService/RemoveBook
+
+# [gRPC] submit a review
+grpcurl -plaintext -d '{"isbn": "12347", "reviewer": "hitesh pattanayak", "comment": "good book", "rating": "5"}' 0.0.0.0:50051  prot.ReviewService/SubmitReviews
+grpcurl -plaintext -d '{"isbn": "12347", "reviewer": "another person", "comment": "great book", "rating": "4"}' 0.0.0.0:50051  prot.ReviewService/SubmitReviews
+
+# [gRPC] get a book with reviews
+grpcurl -plaintext -d '{"isbn": "12347"}' 0.0.0.0:50051  prot.BookInfoService.GetBookInfoWithReviews
