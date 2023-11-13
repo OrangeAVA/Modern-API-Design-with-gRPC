@@ -5,3 +5,10 @@ type Book struct {
 	Name      string `json:"name"`
 	Publisher string `json:"publisher"`
 }
+
+type Review struct {
+	Isbn     int    `json:"isbn"`
+	Reviewer string `json:"reviewer"`
+	Comment  string `json:"comment"`
+	Rating   int    `json:"rating"`
+}

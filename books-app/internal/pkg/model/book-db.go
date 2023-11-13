@@ -13,3 +13,14 @@ type DBBook struct {
 func (DBBook) TableName() string {
 	return "books"
 }
+
+type DBReview struct {
+	Isbn     int    `json:"isbn"`
+	Reviewer string `json:"reviewer"`
+	Comment  string `json:"comment"`
+	Rating   int    `json:"rating"`
+}
+
+func (DBReview) TableName() string {
+	return "reviews"
+}
