@@ -249,3 +249,179 @@ var BookService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "books-app/internal/pkg/proto/book.proto",
 }
+
+// ReviewServiceClient is the client API for ReviewService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ReviewServiceClient interface {
+	// Unary RPC to submit a book review
+	SubmitReviews(ctx context.Context, in *SubmitReviewRequest, opts ...grpc.CallOption) (*SubmitReviewResponse, error)
+}
+
+type reviewServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewReviewServiceClient(cc grpc.ClientConnInterface) ReviewServiceClient {
+	return &reviewServiceClient{cc}
+}
+
+func (c *reviewServiceClient) SubmitReviews(ctx context.Context, in *SubmitReviewRequest, opts ...grpc.CallOption) (*SubmitReviewResponse, error) {
+	out := new(SubmitReviewResponse)
+	err := c.cc.Invoke(ctx, "/prot.ReviewService/SubmitReviews", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ReviewServiceServer is the server API for ReviewService service.
+// All implementations must embed UnimplementedReviewServiceServer
+// for forward compatibility
+type ReviewServiceServer interface {
+	// Unary RPC to submit a book review
+	SubmitReviews(context.Context, *SubmitReviewRequest) (*SubmitReviewResponse, error)
+	mustEmbedUnimplementedReviewServiceServer()
+}
+
+// UnimplementedReviewServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedReviewServiceServer struct {
+}
+
+func (UnimplementedReviewServiceServer) SubmitReviews(context.Context, *SubmitReviewRequest) (*SubmitReviewResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmitReviews not implemented")
+}
+func (UnimplementedReviewServiceServer) mustEmbedUnimplementedReviewServiceServer() {}
+
+// UnsafeReviewServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ReviewServiceServer will
+// result in compilation errors.
+type UnsafeReviewServiceServer interface {
+	mustEmbedUnimplementedReviewServiceServer()
+}
+
+func RegisterReviewServiceServer(s grpc.ServiceRegistrar, srv ReviewServiceServer) {
+	s.RegisterService(&ReviewService_ServiceDesc, srv)
+}
+
+func _ReviewService_SubmitReviews_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmitReviewRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReviewServiceServer).SubmitReviews(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/prot.ReviewService/SubmitReviews",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReviewServiceServer).SubmitReviews(ctx, req.(*SubmitReviewRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ReviewService_ServiceDesc is the grpc.ServiceDesc for ReviewService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ReviewService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "prot.ReviewService",
+	HandlerType: (*ReviewServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SubmitReviews",
+			Handler:    _ReviewService_SubmitReviews_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "books-app/internal/pkg/proto/book.proto",
+}
+
+// BookInfoServiceClient is the client API for BookInfoService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type BookInfoServiceClient interface {
+	// Unary RPC to get book information with reviews by ID
+	GetBookInfoWithReviews(ctx context.Context, in *GetBookInfoRequest, opts ...grpc.CallOption) (*GetBookInfoResponse, error)
+}
+
+type bookInfoServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewBookInfoServiceClient(cc grpc.ClientConnInterface) BookInfoServiceClient {
+	return &bookInfoServiceClient{cc}
+}
+
+func (c *bookInfoServiceClient) GetBookInfoWithReviews(ctx context.Context, in *GetBookInfoRequest, opts ...grpc.CallOption) (*GetBookInfoResponse, error) {
+	out := new(GetBookInfoResponse)
+	err := c.cc.Invoke(ctx, "/prot.BookInfoService/GetBookInfoWithReviews", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// BookInfoServiceServer is the server API for BookInfoService service.
+// All implementations must embed UnimplementedBookInfoServiceServer
+// for forward compatibility
+type BookInfoServiceServer interface {
+	// Unary RPC to get book information with reviews by ID
+	GetBookInfoWithReviews(context.Context, *GetBookInfoRequest) (*GetBookInfoResponse, error)
+	mustEmbedUnimplementedBookInfoServiceServer()
+}
+
+// UnimplementedBookInfoServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedBookInfoServiceServer struct {
+}
+
+func (UnimplementedBookInfoServiceServer) GetBookInfoWithReviews(context.Context, *GetBookInfoRequest) (*GetBookInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBookInfoWithReviews not implemented")
+}
+func (UnimplementedBookInfoServiceServer) mustEmbedUnimplementedBookInfoServiceServer() {}
+
+// UnsafeBookInfoServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BookInfoServiceServer will
+// result in compilation errors.
+type UnsafeBookInfoServiceServer interface {
+	mustEmbedUnimplementedBookInfoServiceServer()
+}
+
+func RegisterBookInfoServiceServer(s grpc.ServiceRegistrar, srv BookInfoServiceServer) {
+	s.RegisterService(&BookInfoService_ServiceDesc, srv)
+}
+
+func _BookInfoService_GetBookInfoWithReviews_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBookInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookInfoServiceServer).GetBookInfoWithReviews(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/prot.BookInfoService/GetBookInfoWithReviews",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookInfoServiceServer).GetBookInfoWithReviews(ctx, req.(*GetBookInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// BookInfoService_ServiceDesc is the grpc.ServiceDesc for BookInfoService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var BookInfoService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "prot.BookInfoService",
+	HandlerType: (*BookInfoServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetBookInfoWithReviews",
+			Handler:    _BookInfoService_GetBookInfoWithReviews_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "books-app/internal/pkg/proto/book.proto",
+}

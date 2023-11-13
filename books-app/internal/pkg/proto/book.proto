@@ -43,3 +43,41 @@ service BookService{
   rpc RemoveBook(RemoveBookRequest) returns (RemoveBookResponse) {};
   rpc UpdateBook(Book) returns (UpdateBookResponse) {};
 }
+
+message SubmitReviewRequest {
+  int32 isbn = 1;
+  string reviewer = 2;
+  string comment = 3;
+  int32 rating = 4;
+}
+
+message SubmitReviewResponse {
+  string status = 1;
+}
+
+service ReviewService {
+   // Unary RPC to submit a book review
+  rpc SubmitReviews(SubmitReviewRequest) returns (SubmitReviewResponse);
+}
+
+message GetBookInfoRequest {
+  int32 isbn = 1;
+}
+
+message Review {
+  string reviewer = 1;
+  string comment = 2;
+  int32 rating = 3;
+}
+
+message GetBookInfoResponse {
+  int32 isbn = 1;
+  string name = 2;
+  string publisher = 3;
+  repeated Review reviews = 4;
+}
+
+service BookInfoService {
+  // Unary RPC to get book information with reviews by ID
+  rpc GetBookInfoWithReviews(GetBookInfoRequest) returns (GetBookInfoResponse);
+}

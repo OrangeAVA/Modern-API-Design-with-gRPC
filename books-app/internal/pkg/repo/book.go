@@ -43,3 +43,17 @@ func (br *BookRepository) GetAllBooks() ([]*model.DBBook, error) {
 func (br *BookRepository) RemoveBook(isbn int) {
 	br.db.Delete(&model.DBBook{}, isbn)
 }
+
+func (br *BookRepository) AddReview(review *model.DBReview) {
+	reviews := []model.DBReview{
+		{Isbn: review.Isbn, Reviewer: review.Reviewer, Comment: review.Comment, Rating: review.Rating},
+	}
+	br.db.Create(&reviews)
+}
+
+func (br *BookRepository) GetAllReviews(isbn int) []model.DBReview {
+	reviews := []model.DBReview{}
+	br.db.Find(&reviews, isbn)
+
+	return reviews
+}
