@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/model"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
@@ -62,6 +63,11 @@ func (a *App) ListBooks(ctx context.Context, _ *proto.Empty) (*proto.ListBooksRe
 
 func (a *App) GetBook(_ context.Context, req *proto.GetBookRequest) (*proto.Book, error) {
 	log.Println("fetching book")
+
+	// Simulate a potentially failing operation.
+	if time.Now().Second()%2 == 0 {
+		return nil, fmt.Errorf("failed to fetch book")
+	}
 
 	book := a.bookRepo.GetBook(int(req.Isbn))
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/model"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
@@ -11,6 +12,11 @@ import (
 
 func (a *App) GetBookReviews(_ context.Context, req *proto.GetBookReviewsRequest) (*proto.GetBookReviewsResponse, error) {
 	log.Println("fethcing book reviews")
+
+	// Simulate a potentially failing operation.
+	if time.Now().Second()%2 == 0 {
+		return nil, fmt.Errorf("failed to fetch book")
+	}
 
 	reviews := a.bookRepo.GetAllReviews(int(req.GetIsbn()))
 
