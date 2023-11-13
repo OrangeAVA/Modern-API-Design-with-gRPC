@@ -256,6 +256,8 @@ var BookService_ServiceDesc = grpc.ServiceDesc{
 type ReviewServiceClient interface {
 	// Unary RPC to submit a book review
 	SubmitReviews(ctx context.Context, in *SubmitReviewRequest, opts ...grpc.CallOption) (*SubmitReviewResponse, error)
+	// Unary RPC to fetch all book reviews
+	GetBookReviews(ctx context.Context, in *GetBookReviewsRequest, opts ...grpc.CallOption) (*GetBookReviewsResponse, error)
 }
 
 type reviewServiceClient struct {
@@ -275,12 +277,23 @@ func (c *reviewServiceClient) SubmitReviews(ctx context.Context, in *SubmitRevie
 	return out, nil
 }
 
+func (c *reviewServiceClient) GetBookReviews(ctx context.Context, in *GetBookReviewsRequest, opts ...grpc.CallOption) (*GetBookReviewsResponse, error) {
+	out := new(GetBookReviewsResponse)
+	err := c.cc.Invoke(ctx, "/prot.ReviewService/GetBookReviews", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ReviewServiceServer is the server API for ReviewService service.
 // All implementations must embed UnimplementedReviewServiceServer
 // for forward compatibility
 type ReviewServiceServer interface {
 	// Unary RPC to submit a book review
 	SubmitReviews(context.Context, *SubmitReviewRequest) (*SubmitReviewResponse, error)
+	// Unary RPC to fetch all book reviews
+	GetBookReviews(context.Context, *GetBookReviewsRequest) (*GetBookReviewsResponse, error)
 	mustEmbedUnimplementedReviewServiceServer()
 }
 
@@ -290,6 +303,9 @@ type UnimplementedReviewServiceServer struct {
 
 func (UnimplementedReviewServiceServer) SubmitReviews(context.Context, *SubmitReviewRequest) (*SubmitReviewResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitReviews not implemented")
+}
+func (UnimplementedReviewServiceServer) GetBookReviews(context.Context, *GetBookReviewsRequest) (*GetBookReviewsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBookReviews not implemented")
 }
 func (UnimplementedReviewServiceServer) mustEmbedUnimplementedReviewServiceServer() {}
 
@@ -322,6 +338,24 @@ func _ReviewService_SubmitReviews_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReviewService_GetBookReviews_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBookReviewsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReviewServiceServer).GetBookReviews(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/prot.ReviewService/GetBookReviews",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReviewServiceServer).GetBookReviews(ctx, req.(*GetBookReviewsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ReviewService_ServiceDesc is the grpc.ServiceDesc for ReviewService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -332,6 +366,10 @@ var ReviewService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SubmitReviews",
 			Handler:    _ReviewService_SubmitReviews_Handler,
+		},
+		{
+			MethodName: "GetBookReviews",
+			Handler:    _ReviewService_GetBookReviews_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,4 +1,4 @@
-package grpcbooksserver
+package grpcreviewserver
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ import (
 )
 
 type App struct {
-	proto.UnimplementedBookServiceServer
+	proto.UnimplementedReviewServiceServer
 
 	dbConn   *gorm.DB
 	bookRepo *repo.BookRepository
@@ -51,7 +51,7 @@ func (a *App) Start() {
 
 	servAddr := fmt.Sprintf("0.0.0.0:%d", appConfig.ServerConfig.Port)
 
-	fmt.Println("starting books gRPC server at", servAddr)
+	fmt.Println("starting reviews gRPC server at", servAddr)
 
 	lis, err := net.Listen("tcp", servAddr)
 	if err != nil {
@@ -64,7 +64,7 @@ func (a *App) Start() {
 
 	s := grpc.NewServer(opts...)
 
-	proto.RegisterBookServiceServer(s, a)
+	proto.RegisterReviewServiceServer(s, a)
 
 	reflection.Register(s)
 

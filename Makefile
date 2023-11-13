@@ -13,6 +13,8 @@ REST_BOOKS_CLIENT_APP_VERSION:=0.0.1
 APP_COMMIT:=$(shell git rev-parse HEAD)
 REST_CONFIG_FILE="./books-app/configs/rest-books-server.yaml"
 GRPC_CONFIG_FILE="./books-app/configs/grpc-books-server.yaml"
+GRPC_REVIEW_CONFIG_FILE="./books-app/configs/grpc-review-server.yaml"
+GRPC_BOOK_INFO_CONFIG_FILE="./books-app/configs/grpc-book-info-server.yaml"
 GRPC_CLIENT_CONFIG_FILE="./books-app/configs/grpc-books-client.yaml"
 REST_CLIENT_CONFIG_FILE="./books-app/configs/rest-books-client.yaml"
 
@@ -86,6 +88,14 @@ main-http-serve:
 .PHONY: main-grpc-serve
 main-grpc-serve:
 	go run books-app/cmd/grpc-books-server/main.go -configFile=$(GRPC_CONFIG_FILE)
+
+.PHONY: main-grpc-review-serve
+main-grpc-review-serve:
+	go run books-app/cmd/grpc-review-server/main.go -configFile=$(GRPC_REVIEW_CONFIG_FILE)
+
+.PHONY: main-grpc-book-info-serve
+main-grpc-book-info-serve:
+	go run books-app/cmd/grpc-book-info-server/main.go -configFile=$(GRPC_BOOK_INFO_CONFIG_FILE)
 
 .PHONY: execute-grpc-client
 execute-grpc-client:
