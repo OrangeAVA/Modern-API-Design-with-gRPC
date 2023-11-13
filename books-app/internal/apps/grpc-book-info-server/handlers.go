@@ -3,6 +3,7 @@ package grpcbooksserver
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
 )
@@ -10,12 +11,15 @@ import (
 func (a *App) GetBookInfoWithReviews(ctx context.Context, req *proto.GetBookInfoRequest) (*proto.GetBookInfoResponse, error) {
 	log.Println("fetching book and reviews")
 
-	book, err := a.bookServerClient.GetBook(ctx, &proto.GetBookRequest{Isbn: req.GetIsbn()})
+	newCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	book, err := a.bookServerClient.GetBook(newCtx, &proto.GetBookRequest{Isbn: req.GetIsbn()})
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := a.reviewServerClient.GetBookReviews(ctx, &proto.GetBookReviewsRequest{Isbn: req.GetIsbn()})
+	resp, err := a.reviewServerClient.GetBookReviews(newCtx, &proto.GetBookReviewsRequest{Isbn: req.GetIsbn()})
 	if err != nil {
 		return nil, err
 	}
