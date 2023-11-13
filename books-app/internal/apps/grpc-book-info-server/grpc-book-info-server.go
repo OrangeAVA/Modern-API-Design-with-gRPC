@@ -27,10 +27,12 @@ type App struct {
 
 	reviewServerConn   *grpc.ClientConn
 	reviewServerClient proto.ReviewServiceClient
+
+	cb *CircuitBreaker
 }
 
 func NewApp() *App {
-	return &App{}
+	return &App{cb: NewCircuitBreaker(3)}
 }
 
 func (a *App) Start() {
