@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: greetclient
+  name: greetclient
+  namespace: default
+spec:
+  ports:
+    - name: restgateway
+      port: 9091
+      protocol: TCP
+      targetPort: 9091
+  selector:
+    app: greetclient
+  type: LoadBalancer
