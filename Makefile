@@ -39,6 +39,10 @@ run-benchmark:
 gen-books-app-proto: 
 	protoc --go_out=books-app/internal/pkg --go-grpc_out=books-app/internal/pkg books-app/internal/pkg/proto/*.proto
 
+.PHONY: gen-greet-proto 
+gen-greet-proto : 
+	protoc --go_out=loadbalancing/internal/pkg --go-grpc_out=loadbalancing/internal/pkg loadbalancing/internal/pkg/proto/*.proto
+
 .PHONY: compile-rest-server
 compile-rest-server:
 	go build -a -ldflags "-X main.version=$(REST_BOOKS_SERVER_APP_VERSION) -X main.commit=$(APP_COMMIT)" -o ./books-app/build/out/$(REST_BOOKS_SERVER_APP_NAME) books-app/cmd/rest-books-server/main.go
