@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greetclient-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greetclient
+  template:
+    metadata:
+      labels:
+        app: greetclient
+    spec:
+      containers:
+        - image: hiteshpattanayak/greet-client:4.0
+          name: greetclient
+          ports:
+            - containerPort: 9091
+          env:
+            - name: GRPC_SERVER_HOST
+              value: greetserver.default.svc.cluster.local
+            - name: GRPC_SVC
+              value: greetserver
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace

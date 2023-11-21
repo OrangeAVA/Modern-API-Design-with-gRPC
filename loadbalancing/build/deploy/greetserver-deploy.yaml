@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greetserver-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: greetserver
+  template:
+    metadata:
+      labels:
+        app: greetserver
+    spec:
+      containers:
+        - image: hiteshpattanayak/greet-server:1.0
+          imagePullPolicy: IfNotPresent
+          name: greetserver
+          ports:
+            - containerPort: 50051
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
