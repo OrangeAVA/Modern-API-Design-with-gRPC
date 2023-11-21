@@ -2,15 +2,16 @@ package greetclient
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/loadbalancing/internal/pkg/kubernetes"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/loadbalancing/internal/pkg/proto"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
+	_ "google.golang.org/grpc/xds"
 )
 
 type App struct {
@@ -51,23 +52,21 @@ func (a *App) setupGreetClient() error {
 	fmt.Println("Starting greet client")
 
 	opts := grpc.WithInsecure()
-	serverHost := "localhost"
+	serverHost := ""
 	serverPort := "50051"
 
 	if port, ok := os.LookupEnv("GRPC_SERVER_PORT"); ok {
 		serverPort = port
 	}
 
-	client, err := kubernetes.GetClusterClient()
-	if err != nil {
-		fmt.Printf("error while creating client: %s\n", err.Error())
-	}
-
-	if host := kubernetes.GetServiceDnsName(client, os.Getenv("GRPC_SVC"), os.Getenv("POD_NAMESPACE")); len(host) > 0 {
+	if host, ok := os.LookupEnv("GRPC_SERVER_HOST"); ok {
 		serverHost = host
+	} else {
+		log.Println("GRPC_SERVER_HOST not provided")
+		return errors.New("GRPC_SERVER_HOST not provided")
 	}
 
-	servAddr := fmt.Sprintf("%s:%s", serverHost, serverPort)
+	servAddr := fmt.Sprintf("xds:///%s:%s", serverHost, serverPort)
 
 	fmt.Println("dialing", servAddr)
 

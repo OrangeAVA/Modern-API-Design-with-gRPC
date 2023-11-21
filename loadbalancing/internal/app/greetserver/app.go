@@ -11,6 +11,7 @@ import (
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/loadbalancing/internal/pkg/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/xds"
 )
 
 type App struct {
@@ -31,12 +32,13 @@ func (a *App) Start() {
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+
 	opts := []grpc.ServerOption{
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionAge: time.Minute * 5,
 		}),
 	}
-	s := grpc.NewServer(opts...)
+	s := xds.NewGRPCServer(opts...)
 	proto.RegisterGreetServiceServer(s, &App{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
