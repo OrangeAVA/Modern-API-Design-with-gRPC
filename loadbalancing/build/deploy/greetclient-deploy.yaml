@@ -13,7 +13,7 @@ spec:
         app: greetclient
     spec:
       containers:
-        - image: hiteshpattanayak/greet-client:4.0
+        - image: hiteshpattanayak/greet-client:19.0
           name: greetclient
           ports:
             - containerPort: 9091
@@ -22,6 +22,10 @@ spec:
               value: greetserver.default.svc.cluster.local
             - name: GRPC_SVC
               value: greetserver
+            - name: LB_POD_NAME
+              value: lookaside
+            - name: LB_SVC_NAME
+              value: lookaside-svc
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:

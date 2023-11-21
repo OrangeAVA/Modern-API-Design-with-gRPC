@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: lookaside
+  name: lookaside
+  namespace: default
+spec:
+  containers:
+    - image: hiteshpattanayak/lookaside:9.0
+      name: lookaside
+      ports:
+        - containerPort: 50055
+      env:
+        - name: LB_PORT
+          value: "50055"

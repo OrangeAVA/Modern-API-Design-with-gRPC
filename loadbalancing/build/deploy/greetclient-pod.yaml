@@ -7,11 +7,15 @@ metadata:
   namespace: default
 spec:
   containers:
-    - image: hiteshpattanayak/greet-client:4.0
+    - image: hiteshpattanayak/greet-client:19.0
       name: greetclient
       env:
         - name: GRPC_SERVER_HOST
           value: greetserver.default.svc.cluster.local
+        - name: LB_POD_NAME
+          value: lookaside
+        - name: LB_SVC_NAME
+          value: lookaside-svc
         - name: GRPC_SVC
           value: greetserver
         - name: POD_NAMESPACE
