@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/configs"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/db"
@@ -12,6 +13,7 @@ import (
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/repo"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"gorm.io/gorm"
 )
@@ -59,6 +61,22 @@ func (a *App) Start() {
 	}
 
 	opts := []grpc.ServerOption{}
+
+	tlsOrNot := configs.TLS
+	tls, _ := strconv.ParseBool(tlsOrNot)
+
+	if tls {
+		certFilePath := configs.SSL_CERT_PATH
+		keyFilePath := configs.SSL_KEY_PATH
+		creds, sslErr := credentials.NewServerTLSFromFile(certFilePath, keyFilePath)
+		if sslErr != nil {
+			log.Fatalf("Failed to load certificates: %v", sslErr)
+			return
+		}
+
+		opts = append(opts, grpc.Creds(creds))
+	}
+
 	middlewareOpts := middleware.ProvideGrpcMiddlewareServerOpts()
 	opts = append(opts, middlewareOpts...)
 

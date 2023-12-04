@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/configs"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/db"
@@ -12,6 +13,7 @@ import (
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/repo"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"gorm.io/gorm"
 )
@@ -99,6 +101,18 @@ func (a *App) dialBookServer(appConfig *configs.AppConfig, err error) {
 	bookServAddr := appConfig.ServerConfig.BookServerAddress
 
 	opts := grpc.WithInsecure()
+
+	tlsOrNot := configs.TLS
+	tls, _ := strconv.ParseBool(tlsOrNot)
+	if tls {
+		certFilePath := configs.SSL_CA_CERT_PATH
+		creds, sslErr := credentials.NewClientTLSFromFile(certFilePath, "")
+		if sslErr != nil {
+			log.Fatalf("Failed to loading ca trust certificates: %v", sslErr)
+			return
+		}
+		opts = grpc.WithTransportCredentials(creds)
+	}
 
 	a.bookServerConn, err = grpc.Dial(bookServAddr, opts)
 	if err != nil {

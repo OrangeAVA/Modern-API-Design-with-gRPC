@@ -17,6 +17,7 @@ GRPC_REVIEW_CONFIG_FILE="./books-app/configs/grpc-review-server.yaml"
 GRPC_BOOK_INFO_CONFIG_FILE="./books-app/configs/grpc-book-info-server.yaml"
 GRPC_CLIENT_CONFIG_FILE="./books-app/configs/grpc-books-client.yaml"
 REST_CLIENT_CONFIG_FILE="./books-app/configs/rest-books-client.yaml"
+SERVER_CN="localhost"
 
 .PHONY: gen-person-proto 
 gen-person-proto: 
@@ -37,11 +38,15 @@ run-benchmark:
 
 .PHONY: gen-books-app-proto 
 gen-books-app-proto: 
-	protoc --go_out=books-app/internal/pkg --go-grpc_out=books-app/internal/pkg books-app/internal/pkg/proto/*.proto
+	protoc --go_out=books-app/internal/pkg --go-grpc_out=books-app/internal/pkg books-app/internal/pkg/proto/book.proto
 
 .PHONY: gen-greet-proto 
 gen-greet-proto : 
 	protoc --go_out=loadbalancing/internal/pkg --go-grpc_out=loadbalancing/internal/pkg loadbalancing/internal/pkg/proto/*.proto
+
+.PHONY: gen-auth-proto 
+gen-auth-proto : 
+	protoc --go_out=books-app/internal/pkg --go-grpc_out=books-app/internal/pkg books-app/internal/pkg/proto/auth.proto
 
 .PHONY: compile-rest-server
 compile-rest-server:
@@ -116,3 +121,12 @@ start-pg:
 .PHONY: exec-pg
 exec-pg:
 	docker exec -it <container-id> psql -U postgres
+
+.PHONY: gen-ssl
+gen-ssl:
+	openssl genrsa -passout pass:1111 -des3 -out books-app/ssl/ca.key 4096
+	openssl req -passin pass:1111 -new -x509 -days 365 -key books-app/ssl/ca.key -out books-app/ssl/ca.crt -subj "//CN=${SERVER_CN}" -addext "subjectAltName=DNS:${SERVER_CN}"
+	openssl genrsa -passout pass:1111 -des3 -out books-app/ssl/server.key 4096
+	openssl req -passin pass:1111 -new -key books-app/ssl/server.key -out books-app/ssl/server.csr -subj "//CN=${SERVER_CN}" -addext "subjectAltName=DNS:${SERVER_CN}"
+	openssl x509 -req -passin pass:1111 -days 365 -in books-app/ssl/server.csr -CA books-app/ssl/ca.crt -CAkey books-app/ssl/ca.key -set_serial 01 -out books-app/ssl/server.crt
+	openssl pkcs8 -topk8 -nocrypt -passin pass:1111 -in books-app/ssl/server.key -out books-app/ssl/server.pem

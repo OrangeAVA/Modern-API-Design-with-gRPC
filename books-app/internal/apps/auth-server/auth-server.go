@@ -1,31 +1,31 @@
-package grpcbooksserver
+package authserver
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/configs"
-	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/db"
-	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/db/migrations"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/jwt"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/middleware"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/repo"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
-	"gorm.io/gorm"
+	"google.golang.org/grpc/status"
 )
 
 type App struct {
-	proto.UnimplementedBookServiceServer
+	proto.UnimplementedAuthServiceServer
 
-	dbConn   *gorm.DB
-	bookRepo *repo.BookRepository
+	userStore  repo.UserStore
+	jwtManager *jwt.JWTManager
 }
 
-func NewApp() *App {
-	return &App{}
+func NewApp(userStore repo.UserStore, jwtManager *jwt.JWTManager) *App {
+	return &App{userStore: userStore, jwtManager: jwtManager}
 }
 
 func (a *App) Start() {
@@ -35,41 +35,22 @@ func (a *App) Start() {
 		log.Fatal(err)
 	}
 
-	dbConn, err := db.ProvideDBConn(&appConfig.DBConfig)
-	if err != nil {
-		log.Fatal(err)
-	}
-	a.dbConn = dbConn
-
-	a.bookRepo = repo.GetNewBookRepository(a.dbConn)
-
-	migrator, err := migrations.ProvideMigrator(appConfig.DBConfig, dbConn)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	migrator.RunMigrations()
-
 	servAddr := fmt.Sprintf("0.0.0.0:%d", appConfig.ServerConfig.Port)
 
-	fmt.Println("starting books gRPC server at", servAddr)
+	fmt.Println("starting auth gRPC server at", servAddr)
 
 	lis, err := net.Listen("tcp", servAddr)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	jwtMgr := jwt.NewJWTManager()
-	authInterceptor := middleware.NewAuthInterceptor(jwtMgr, configs.AccessibleRoles())
-
 	opts := []grpc.ServerOption{}
 	middlewareOpts := middleware.ProvideGrpcMiddlewareServerOpts()
 	opts = append(opts, middlewareOpts...)
-	opts = append(opts, grpc.UnaryInterceptor(authInterceptor.Unary()), grpc.StreamInterceptor(authInterceptor.Stream()))
 
 	s := grpc.NewServer(opts...)
 
-	proto.RegisterBookServiceServer(s, a)
+	proto.RegisterAuthServiceServer(s, a)
 
 	reflection.Register(s)
 
@@ -78,7 +59,26 @@ func (a *App) Start() {
 	}
 }
 
-func (a *App) Shutdown() {
-	dbInstance, _ := a.dbConn.DB()
-	_ = dbInstance.Close()
+func (a *App) Shutdown() {}
+
+func (a *App) Login(ctx context.Context, req *proto.LoginRequest) (*proto.LoginResponse, error) {
+	user, err := a.userStore.Find(req.GetUsername())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot find user: %v", err)
+	}
+
+	if user == nil || !user.IsCorrectPassword(req.GetPassword()) {
+		return nil, status.Errorf(codes.InvalidArgument, "invlid username or password")
+	}
+
+	token, err := a.jwtManager.Generate(user)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot generate access token: %v", err)
+	}
+
+	res := &proto.LoginResponse{
+		AccessToken: token,
+	}
+
+	return res, nil
 }
