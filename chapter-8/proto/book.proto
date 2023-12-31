@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package prot;
+option go_package="./proto";
+
+message Empty{}
+
+message Book {
+  int32 isbn = 1;
+  string name = 2;
+  string publisher = 3;
+}
+message ListBooksRespose{
+    repeated Book books = 1;
+}
+
+service BookService{
+  rpc ListBooks(Empty) returns (ListBooksRespose) {};
+}

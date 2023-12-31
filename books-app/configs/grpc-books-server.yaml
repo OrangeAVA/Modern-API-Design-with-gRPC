@@ -2,6 +2,7 @@ app:
   serviceName: "grpc-books-server"
   host: "127.0.0.1"
   port: 50051
+  prometheusPort: 2114
 db:
   name: books_db
   schema: "public"

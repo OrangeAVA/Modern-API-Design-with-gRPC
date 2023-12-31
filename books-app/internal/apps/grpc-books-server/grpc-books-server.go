@@ -11,6 +11,7 @@ import (
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/middleware"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/repo"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"gorm.io/gorm"
@@ -67,6 +68,9 @@ func (a *App) Start() {
 	proto.RegisterBookServiceServer(s, a)
 
 	reflection.Register(s)
+
+	grpc_prometheus.Register(s)
+	middleware.RunPrometheusServer(appConfig.ServerConfig.PrometheusPort)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)

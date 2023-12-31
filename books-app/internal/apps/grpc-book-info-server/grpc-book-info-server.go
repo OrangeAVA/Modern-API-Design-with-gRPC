@@ -13,6 +13,7 @@ import (
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/repo"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 	"gorm.io/gorm"
 )
 
@@ -39,6 +40,9 @@ func (a *App) Start() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Start the tracer and defer the Stop method.
+	tracer.Start(tracer.WithAgentAddr(appConfig.ServerConfig.DataDogServerAddress))
 
 	dbConn, err := db.ProvideDBConn(&appConfig.DBConfig)
 	if err != nil {
@@ -111,4 +115,6 @@ func (a *App) dialBookServer(appConfig *configs.AppConfig, err error) {
 func (a *App) Shutdown() {
 	dbInstance, _ := a.dbConn.DB()
 	_ = dbInstance.Close()
+
+	tracer.Stop()
 }

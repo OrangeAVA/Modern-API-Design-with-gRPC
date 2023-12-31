@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpc-client
+  template:
+    metadata:
+      labels:
+        app: grpc-client
+    spec:
+      containers:
+        - name: grpc-client
+          image: grpc-client:1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-client-service
+spec:
+  selector:
+    app: grpc-client
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 50052
+  type: LoadBalancer # Adjust the service type as needed

@@ -4,6 +4,7 @@ app:
   port: 50053
   reviewServerAddress: "localhost:50052"
   bookServerAddress: "localhost:50051"
+  datadogServerAddress: "localhost:5191"
 db:
   name: books_db
   schema: "public"
