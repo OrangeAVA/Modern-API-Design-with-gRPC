@@ -7,6 +7,7 @@ type ServerConfig struct {
 	LogLevel       string `mapstructure:"logLevel"`
 	PrometheusPort int    `mapstructure:"prometheusPort"`
 
+	DataDogServerAddress  string `mapstructure:"datadogServerAddress"`
 	ReviewServerAddress   string `mapstructure:"reviewServerAddress"`
 	BookServerAddress     string `mapstructure:"bookServerAddress"`
 	BookInfoServerAddress string `mapstructure:"bookInfoServerAddress"`
