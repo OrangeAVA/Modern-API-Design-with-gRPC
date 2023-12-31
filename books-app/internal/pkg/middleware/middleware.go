@@ -22,6 +22,7 @@ func ProvideGrpcMiddlewareServerOpts() []grpc.ServerOption {
 	// add middlewares
 	AddLogging(logger.Log, &uInterceptors, &sInterceptors)
 	AddRecovery(&uInterceptors, &sInterceptors)
+	AddPrometheus(&uInterceptors, &sInterceptors)
 
 	opts = AddInterceptors(opts, uInterceptors, sInterceptors)
 
