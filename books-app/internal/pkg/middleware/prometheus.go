@@ -20,42 +20,50 @@ var Incoming_api_req_counter = prometheus.NewCounter(
 		Help:      "counts incoming requests to api",
 	})
 
-var Emp_get_fail_counter = prometheus.NewCounter(
+var Book_get_pass_counter = prometheus.NewCounter(
 	prometheus.CounterOpts{
 		Namespace: "golang",
-		Name:      "get_employee_fail_ctr",
-		Help:      "counts failure to fetch employee",
+		Name:      "get_book_pass_ctr",
+		Help:      "counts success to fetch book",
 	})
 
-var Emp_create_fail_counter = prometheus.NewCounter(
+var Book_get_fail_counter = prometheus.NewCounter(
 	prometheus.CounterOpts{
 		Namespace: "golang",
-		Name:      "create_employee_fail_ctr",
-		Help:      "counts failure to create employee",
+		Name:      "get_book_fail_ctr",
+		Help:      "counts fail to fetch book",
 	})
 
-var Emp_update_fail_counter = prometheus.NewCounter(
+var Book_create_pass_counter = prometheus.NewCounter(
 	prometheus.CounterOpts{
 		Namespace: "golang",
-		Name:      "update_employee_fail_ctr",
-		Help:      "counts failure to update employee",
+		Name:      "create_book_pass_ctr",
+		Help:      "counts success to create book",
 	})
 
-var Emp_delete_fail_counter = prometheus.NewCounter(
+var Book_update_pass_counter = prometheus.NewCounter(
 	prometheus.CounterOpts{
 		Namespace: "golang",
-		Name:      "delete_employee_fail_ctr",
-		Help:      "counts failure to delete employee",
+		Name:      "update_book_pass_ctr",
+		Help:      "counts success to update book",
+	})
+
+var Book_delete_pass_counter = prometheus.NewCounter(
+	prometheus.CounterOpts{
+		Namespace: "golang",
+		Name:      "delete_book_pass_ctr",
+		Help:      "counts success to delete book",
 	})
 
 func Register() {
 	logger.Log.Info("registering of prometheus custom metrics starts")
 
 	prometheus.MustRegister(Incoming_api_req_counter)
-	prometheus.MustRegister(Emp_get_fail_counter)
-	prometheus.MustRegister(Emp_create_fail_counter)
-	prometheus.MustRegister(Emp_update_fail_counter)
-	prometheus.MustRegister(Emp_delete_fail_counter)
+	prometheus.MustRegister(Book_get_pass_counter)
+	prometheus.MustRegister(Book_create_pass_counter)
+	prometheus.MustRegister(Book_update_pass_counter)
+	prometheus.MustRegister(Book_delete_pass_counter)
+	prometheus.MustRegister(Book_get_fail_counter)
 
 	logger.Log.Info("registering of prometheus custom metrics ends")
 }
