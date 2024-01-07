@@ -18,7 +18,7 @@ func GetNewBooksHandler(bookService service.BooksService) *BooksHandler {
 	return &BooksHandler{bookService: bookService}
 }
 
-func (bh *BooksHandler) BooksHandler(w http.ResponseWriter, r *http.Request) {
+func (bh *BooksHandler) GetBookList(w http.ResponseWriter, r *http.Request) {
 	books, err := bh.bookService.GetAllBooks()
 	if err != nil {
 		respondWithError(w, http.StatusNotFound, err.Error())
@@ -27,11 +27,11 @@ func (bh *BooksHandler) BooksHandler(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, books)
 }
 
-func (bh *BooksHandler) AddOrRemoveBookHandler(w http.ResponseWriter, r *http.Request) {
+func (bh *BooksHandler) GetOrRemoveBookHandler(w http.ResponseWriter, r *http.Request) {
 	muxVar := mux.Vars(r)
 	isbnStr := muxVar["isbn"]
 	isbn, err := strconv.Atoi(isbnStr)
-	if err != nil {
+	if err != nil || isbn == 0 {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -42,10 +42,8 @@ func (bh *BooksHandler) AddOrRemoveBookHandler(w http.ResponseWriter, r *http.Re
 			respondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
-		respondWithJSON(w, http.StatusOK, book)
-	}
-
-	if r.Method == "DELETE" {
+		respondWithJSON(w, http.StatusOK, Book(book))
+	} else if r.Method == "DELETE" {
 		bh.bookService.RemoveBook(isbn)
 		respondWithJSON(w, http.StatusOK, map[string]string{SuccessResponseFieldKey: "book removed"})
 	}

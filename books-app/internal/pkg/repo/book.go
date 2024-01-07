@@ -14,10 +14,7 @@ func GetNewBookRepository(db *gorm.DB) *BookRepository {
 }
 
 func (br *BookRepository) AddBook(book *model.DBBook) {
-	books := []model.DBBook{
-		{Name: book.Name, Publisher: book.Publisher, Isbn: book.Isbn},
-	}
-	br.db.Create(&books)
+	br.db.Create(book)
 }
 
 func (br *BookRepository) UpdateBook(book *model.DBBook) {

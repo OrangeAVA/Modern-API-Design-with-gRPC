@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # [REST] Fetch all books
-curl --request GET --url http://localhost:8090/books/all | json_pp
+curl --request GET --url http://localhost:8090/books | json_pp
 
 # [REST] Fetch a book by isbn
 curl --request GET --url http://localhost:8090/books/12346 | json_pp
