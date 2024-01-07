@@ -7,6 +7,7 @@ import (
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/configs"
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/books-app/internal/pkg/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type App struct {
@@ -26,7 +27,7 @@ func (a *App) Start() {
 
 	servAddr := appConfig.ClientConfig.ServerAddress
 
-	opts := grpc.WithInsecure()
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
 
 	a.serverConn, err = grpc.Dial(servAddr, opts)
 	if err != nil {
