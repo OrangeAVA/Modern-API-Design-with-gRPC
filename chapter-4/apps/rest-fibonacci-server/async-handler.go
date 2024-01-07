@@ -70,7 +70,7 @@ func (a *App) fibonacciAsyncHandler(w http.ResponseWriter, r *http.Request) {
 	numbersNow, current, requested := a.asyncStores[reqId].Read()
 	fmt.Printf("read fibs reqId %s till current %d and numbers are: %v\n", reqId, current, numbersNow)
 	end := false
-	if (current + 1) == requested {
+	if current == requested {
 		end = true
 		delete(a.asyncStores, reqId)
 	}

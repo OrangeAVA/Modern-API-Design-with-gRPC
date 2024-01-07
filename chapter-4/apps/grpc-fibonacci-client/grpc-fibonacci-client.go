@@ -9,6 +9,7 @@ import (
 
 	"github.com/HiteshRepo/Modern-API-Design-with-gRPC/chapter-4/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
@@ -35,7 +36,7 @@ func (a *App) Start() {
 
 	servAddr := "localhost:50051"
 
-	opts := grpc.WithInsecure()
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
 	a.clientConn, err = grpc.Dial(servAddr, opts)
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)

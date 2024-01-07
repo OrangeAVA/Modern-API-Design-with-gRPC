@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"net"
 	"time"
 
@@ -47,7 +48,20 @@ func (a *App) Shutdown() {
 }
 
 func (a *App) FindMax(stream proto.MaxService_FindMaxServer) error {
-	max := int32(-1)
+	max := int32(math.MinInt32)
+	responseChan := make(chan int32, 1)
+
+	go func() {
+		for {
+			time.Sleep(2000 * time.Millisecond)
+			err := stream.Send(&proto.MaxResponse{Max: max})
+			if err != nil {
+				log.Fatalf("Error while sending to client: %v", err)
+				return
+			}
+		}
+	}()
+
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
@@ -55,6 +69,7 @@ func (a *App) FindMax(stream proto.MaxService_FindMaxServer) error {
 		}
 		if err != nil {
 			log.Fatalf("error while reading client stream: %v", err)
+			return err
 		}
 
 		num := req.GetNumber()
@@ -62,11 +77,7 @@ func (a *App) FindMax(stream proto.MaxService_FindMaxServer) error {
 			max = num
 		}
 
-		time.Sleep(2000 * time.Millisecond)
-		err = stream.Send(&proto.MaxResponse{Max: max})
-		if err != nil {
-			log.Fatalf("Error while sending to client: %v", err)
-			return err
-		}
+		// Send the updated max to the goroutine through the channel
+		responseChan <- max
 	}
 }
